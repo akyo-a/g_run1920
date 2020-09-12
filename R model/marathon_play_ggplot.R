@@ -41,4 +41,35 @@ m_pace
 
 
 
+#pace
+m_pace <- m_all %>%
+  ggplot(aes(x = DATE, y = AVG_PACEMIN)) +
+  geom_point() +
+  scale_x_date(date_breaks = "1 week", date_labels = "%b %d") +
+  scale_y_continuous(limits = c(8,11)) + 
+  geom_vline(aes(xintercept = as.Date('2020-02-02'), col ='red')) + #fixed by using the function as.Date for filter
+  geom_text(aes(x=as.Date('2020-02-02'),y=10,label = 'Surf City Half(Start new cycle)')) + 
+  geom_hline(aes(yintercept = avg_pace, col ='cyan'))
+
+m_pace
+
+
+
 #NOTES: need to decide on how to round the times, if any
+
+#attempting to overlay before and after
+##option1 : create two separate dfs (one for before and one for after) then overlay with color
+
+
+##option 2: create new column and then group with dyplr
+m_all<- m_all %>% 
+  mutate( SCM = ifelse(as.Date(DATE) > '2020-02-02', 'after', 'before'))
+
+m_all %>%
+  ggplot(aes(x = DATE, y = AVG_PACEMIN, colour = SCM)) +
+  geom_point() +
+  scale_x_date(date_breaks = "1 week", date_labels = "%b %d") +
+  scale_y_continuous(limits = c(8,11)) + 
+  geom_vline(aes(xintercept = as.Date('2020-02-02'), col ='red')) + #fixed by using the function as.Date for filter
+  geom_text(aes(x=as.Date('2020-02-02'),y=10,label = 'Surf City Half(Start new cycle)')) + 
+  geom_hline(aes(yintercept = avg_pace, col ='cyan'))
